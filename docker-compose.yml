@@ -1,0 +1,52 @@
+services:
+  neo4j:
+    image: neo4j:5.11-community
+    container_name: neo4j-social
+    environment:
+      - NEO4J_AUTH=neo4j/password123
+      - NEO4J_dbms_memory_pagecache_size=1G
+      - NEO4J_dbms_memory_heap_initial__size=1G
+      - NEO4J_dbms_memory_heap_max__size=1G
+      - NEO4J_dbms_connector_bolt_listen__address=0.0.0.0:7687
+      - NEO4J_dbms_connector_http_listen__address=0.0.0.0:7474
+    ports:
+      - "7474:7474"  # HTTP
+      - "7687:7687"  # Bolt
+    volumes:
+      - neo4j_data:/data
+      - neo4j_logs:/logs
+      - neo4j_import:/var/lib/neo4j/import
+      - neo4j_plugins:/plugins
+    networks:
+      - social_network
+    restart: unless-stopped
+
+  php-api:
+    build:
+      context: ./php-api
+      dockerfile: Dockerfile
+    container_name: php-social-api
+    ports:
+      - "8080:80"
+    volumes:
+      - ./php-api:/var/www/html
+    depends_on:
+      - neo4j
+    networks:
+      - social_network
+    environment:
+      - NEO4J_HOST=neo4j
+      - NEO4J_PORT=7687
+      - NEO4J_USER=neo4j
+      - NEO4J_PASSWORD=password123
+    restart: unless-stopped
+
+networks:
+  social_network:
+    driver: bridge
+
+volumes:
+  neo4j_data:
+  neo4j_logs:
+  neo4j_import:
+  neo4j_plugins:
