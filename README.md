@@ -14,6 +14,13 @@ docker rmi neo4j-playground-php-api
 docker-compose up -d --build
 ```
 
+after first run, rebuild or some changes to composer.json we need to run composer install manually
+```bash
+make composerInstall
+# or
+docker exec php-social-api composer install
+```
+
 ### Access the services
 
 Neo4j Browser: http://localhost:7474 (username: neo4j, password: password123)
