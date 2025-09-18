@@ -4,11 +4,15 @@ Test playground to play with neo4j and php api. Generated mostly by Claude.
 ### Start the containers
 
 ```bash
+make up
+# or
 docker-compose up -d
 ```
 
 rebuild
 ```bash
+make rebuild
+# or
 docker-compose down
 docker rmi neo4j-playground-php-api
 docker-compose up -d --build
